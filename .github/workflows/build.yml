@@ -1,37 +1,30 @@
-name: Build ZMK Firmware
-
-on: [push, pull_request, workflow_dispatch]
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        board: [seeeduino_xiao_ble]
-        shield: [prospector_adapter]
-
     steps:
-      - name: Checkout this repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install prerequisites
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ninja-build gperf ccache dfu-util device-tree-compiler wget \
-              python3-pip python3-setuptools python3-wheel xz-utils file make gcc g++ git cmake
-          pip3 install --upgrade pip
+          sudo apt update
+          sudo apt install -y cmake ninja-build gperf ccache dfu-util device-tree-compiler wget xz-utils file python3-pip
           pip3 install west
-
-      - name: Initialize west workspace
-        run: |
           west init -l config
           west update
+          west zephyr-export
 
-      - name: Export Zephyr CMake package
-        run: west zephyr-export
+      - name: Install Zephyr SDK
+        run: |
+          wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.16.4/zephyr-sdk-0.16.4_linux-x86_64.tar.xz
+          tar xf zephyr-sdk-0.16.4_linux-x86_64.tar.xz
+          mv zephyr-sdk-0.16.4 $HOME/zephyr-sdk
+          $HOME/zephyr-sdk/setup.sh -t all -h
+
+      - name: Set environment variables
+        run: |
+          echo "ZEPHYR_SDK_INSTALL_DIR=$HOME/zephyr-sdk" >> $GITHUB_ENV
+          echo "ZEPHYR_TOOLCHAIN_VARIANT=zephyr" >> $GITHUB_ENV
 
       - name: Build firmware
         run: |
-          west build -s zmk/app -b ${{ matrix.board }} \
-            -- -DSHIELD=${{ matrix.shield }} -DZMK_CONFIG=../../config
+          west build -s zmk/app -b seeeduino_xiao_ble -- -DSHIELD=prospector_adapter -DZMK_CONFIG=../../config
