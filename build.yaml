@@ -1,5 +1,5 @@
 include:
   - board: seeeduino_xiao_ble
-    shield: "prospector_adapter roBa_dongle"
+    shield: roBa_dongle
     cmake-args: -DZMK_CONFIG=../../config
     artifact-name: roBa_dongle
