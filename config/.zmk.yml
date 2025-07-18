@@ -1,7 +1,6 @@
-board: seeeduino_xiao_ble
-shield: roBa_dongle
-features:
-  - display
-includes:
-  - build.yaml  # ← これならリポジトリ直下を探す
-  
+shield:
+  name: roBa_dongle
+  type: shield
+  requires: [seeeduino_xiao_ble]
+  features:
+    - display
