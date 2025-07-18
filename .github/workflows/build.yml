@@ -1,11 +1,38 @@
+name: Build
+
 on: [push, pull_request, workflow_dispatch]
+
 jobs:
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
-    with:
-      config_path: config
-      build_matrix: |
-        board: seeeduino_xiao_ble
-        shield: roBa_dongle
-        artifact_name: roBa_dongle
-        cmake_args: -DSHIELD=roBa_dongle
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - board: seeeduino_xiao_ble
+            shield: prospector_adapter
+          - board: seeeduino_xiao_ble
+            shield: roBa_dongle
+    steps:
+      - name: Checkout config
+        uses: actions/checkout@v3
+
+      - name: Checkout ZMK
+        uses: actions/checkout@v3
+        with:
+          repository: zmkfirmware/zmk
+          path: zmk
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Build
+        run: |
+          pip install west
+          west init -l config
+          west update
+          west build -s zmk/app -d build/${{ matrix.shield }} \
+            -b ${{ matrix.board }} \
+            -- -DSHIELD=${{ matrix.shield }} -DZMK_CONFIG=../../config
