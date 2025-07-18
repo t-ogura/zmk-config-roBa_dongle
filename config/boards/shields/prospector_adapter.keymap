@@ -1,0 +1,8 @@
+/ {
+  keymap {
+    compatible = "zmk,keymap";
+    label = "Keymap";
+
+    bindings = <&trans &kp A>;
+  };
+};
