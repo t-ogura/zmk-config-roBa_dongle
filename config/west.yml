@@ -1,0 +1,30 @@
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+    - name: carrefinho
+      url-base: https://github.com/carrefinho
+    - name: caksoylar
+      url-base: https://github.com/caksoylar
+    - name: sayu-hub
+      url-base: https://github.com/sayu-hub
+
+  projects:
+    - name: zmk
+      remote: zmkfirmware
+      revision: main
+      import: app/west.yml
+
+    - name: prospector-zmk-module
+      remote: carrefinho
+      revision: main
+      path: modules/prospector-zmk-module
+
+    # 必要に応じて他のモジュールも
+    # - name: zmk-pmw3610-driver
+    #   remote: caksoylar
+    #   revision: main
+    #   path: modules/zmk-pmw3610-driver
+
+  self:
+    path: config
