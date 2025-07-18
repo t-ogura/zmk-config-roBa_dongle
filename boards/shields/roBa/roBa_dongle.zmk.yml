@@ -1,7 +1,6 @@
-# config/boards/shields/roBa/roBa_dongle.zmk.yml
-type: shield
-
-compatible: [seeeduino_xiao_ble]
-
-features:
-  - display
+shield:
+  name: roBa_dongle
+  type: shield
+  requires: [seeeduino_xiao_ble]
+  features:
+    - display
