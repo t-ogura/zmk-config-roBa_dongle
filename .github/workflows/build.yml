@@ -1,40 +1,8 @@
-name: Build ZMK firmware
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install prerequisites
-        run: |
-          sudo apt update
-          sudo apt install -y cmake ninja-build gperf ccache dfu-util device-tree-compiler wget xz-utils file python3-pip
-          pip3 install west
-          pip3 install pyelftools  # ← この行を追加！
-          west init -l config
-          west update
-          west zephyr-export
-
-      - name: Install Zephyr SDK
-        run: |
-          wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.16.4/zephyr-sdk-0.16.4_linux-x86_64.tar.xz
-          tar xf zephyr-sdk-0.16.4_linux-x86_64.tar.xz
-          mv zephyr-sdk-0.16.4 $HOME/zephyr-sdk
-          $HOME/zephyr-sdk/setup.sh -t all -h
-
-      - name: Set environment variables
-        run: |
-          echo "ZEPHYR_SDK_INSTALL_DIR=$HOME/zephyr-sdk" >> $GITHUB_ENV
-          echo "ZEPHYR_TOOLCHAIN_VARIANT=zephyr" >> $GITHUB_ENV
-
-      - name: Build firmware
-        run: |
-          west build -s zmk/app -b seeeduino_xiao_ble -- -DSHIELD=prospector_adapter -DZMK_CONFIG=../../config
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    with:
+      config-path: config
+      matrix-file: build.yaml
