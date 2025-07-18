@@ -1,0 +1,4 @@
+# config/boards/shields/prospector_adapter/prospector_adapter.keymap
+
+# define a minimal keymap with 1 key
+&kp A
