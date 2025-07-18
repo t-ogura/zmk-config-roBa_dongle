@@ -1,0 +1,4 @@
+type: shield
+requires: [seeeduino_xiao_ble]
+features:
+  - display
