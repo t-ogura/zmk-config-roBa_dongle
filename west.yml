@@ -14,4 +14,4 @@ manifest:
       revision: main
       path: modules/prospector-zmk-module
   self:
-    path: .
+    path: config
