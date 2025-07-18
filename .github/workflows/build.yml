@@ -1,38 +1,37 @@
-name: Build
+name: Build ZMK Firmware
 
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        include:
-          - board: seeeduino_xiao_ble
-            shield: prospector_adapter
-          - board: seeeduino_xiao_ble
-            shield: roBa_dongle
+        board: [seeeduino_xiao_ble]
+        shield: [prospector_adapter]
+
     steps:
-      - name: Checkout config
+      - name: Checkout this repository
         uses: actions/checkout@v3
 
-      - name: Checkout ZMK
-        uses: actions/checkout@v3
-        with:
-          repository: zmkfirmware/zmk
-          path: zmk
-          submodules: recursive
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-
-      - name: Build
+      - name: Install prerequisites
         run: |
-          pip install west
+          sudo apt-get update
+          sudo apt-get install -y ninja-build gperf ccache dfu-util device-tree-compiler wget \
+              python3-pip python3-setuptools python3-wheel xz-utils file make gcc g++ git cmake
+          pip3 install --upgrade pip
+          pip3 install west
+
+      - name: Initialize west workspace
+        run: |
           west init -l config
           west update
-          west build -s zmk/app -d build/${{ matrix.shield }} \
-            -b ${{ matrix.board }} \
+
+      - name: Export Zephyr CMake package
+        run: west zephyr-export
+
+      - name: Build firmware
+        run: |
+          west build -s zmk/app -b ${{ matrix.board }} \
             -- -DSHIELD=${{ matrix.shield }} -DZMK_CONFIG=../../config
