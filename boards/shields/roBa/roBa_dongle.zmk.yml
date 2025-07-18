@@ -1,8 +1,6 @@
 shield:
   name: roBa_dongle
   type: shield
-  requires:
-    - seeeduino_xiao_ble
-    - prospector_adapter
+  requires: [seeeduino_xiao_ble]
   features:
     - display
