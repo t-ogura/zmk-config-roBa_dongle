@@ -1,0 +1,9 @@
+if SHIELD_ROBA_DONGLE
+
+config ZMK_KEYBOARD_NAME
+    default "roBa_dongle"
+
+# config ZMK_KEYMAP
+#     default y  # ← 入力不要なのでコメントアウトまたは削除
+
+endif
