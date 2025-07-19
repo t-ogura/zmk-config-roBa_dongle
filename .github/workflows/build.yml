@@ -1,3 +1,4 @@
+# .github/workflows/build.yml
 name: CI
 
 on:
@@ -9,10 +10,9 @@ on:
 
 jobs:
   build:
-    # ZMK 本体に付属している再利用ワークフローを呼び出す
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
     with:
-      # あなたのリポジトリのルート（config ディレクトリ）を指定
-      config_path: .
-      # あなたの build マトリクスファイル名を指定
-      build_matrix_path: build.yaml
+      # ← ここを「config」に戻す
+      config_path: config
+      # build.yaml のファイル名がデフォルトなので省略しても OK
+      # build_matrix_path: build.yaml
